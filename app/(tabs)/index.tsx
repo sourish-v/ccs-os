@@ -1,11 +1,12 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { useGoals } from "@/contexts/goals-context";
 import { useHabits } from "@/contexts/habits-context";
 import { useProjects } from "@/contexts/projects-context";
 import { getMemberByName, useSession } from "@/contexts/session-context";
+import { useTasks } from "@/contexts/tasks-context";
 
 export default function DashboardScreen() {
   const { member } = useLocalSearchParams<{ member?: string }>();
@@ -17,6 +18,7 @@ export default function DashboardScreen() {
     getPriorityGoals,
   } = useGoals();
   const { getPriorityProjects } = useProjects();
+  const { getPriorityTasks } = useTasks();
   const routeMember = getMemberByName(member);
   const activeMember = selectedMember ?? routeMember;
   const visibleHabits = activeMember ? getVisibleHabits(activeMember.name) : [];
@@ -24,6 +26,7 @@ export default function DashboardScreen() {
   const priorityProjects = activeMember
     ? getPriorityProjects(activeMember.name)
     : [];
+  const priorityTasks = activeMember ? getPriorityTasks(activeMember.name) : [];
   const personalScore = activeMember ? getPersonalScore(activeMember.name) : 0;
 
   useEffect(() => {
@@ -49,36 +52,67 @@ export default function DashboardScreen() {
     >
       {/* Header */}
 
-      <Text
+      <View
         style={{
-          color: "#888",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
           marginTop: 40,
         }}
       >
-        Good Morning
-      </Text>
+        <View>
+          <Text
+            style={{
+              color: "#888",
+            }}
+          >
+            Good Morning
+          </Text>
 
-      <Text
-        style={{
-          color: "white",
-          fontSize: 32,
-          fontWeight: "700",
-          marginTop: 5,
-        }}
-      >
-        {activeMember?.name}
-      </Text>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 32,
+              fontWeight: "700",
+              marginTop: 5,
+            }}
+          >
+            {activeMember?.name}
+          </Text>
 
-      <Text
-        style={{
-          color: "#AAA",
-          marginTop: 6,
-        }}
-      >
-        {activeMember
-          ? `${activeMember.role} \u2022 ${activeMember.skill}`
-          : ""}
-      </Text>
+          <Text
+            style={{
+              color: "#AAA",
+              marginTop: 6,
+            }}
+          >
+            {activeMember
+              ? `${activeMember.role} \u2022 ${activeMember.skill}`
+              : ""}
+          </Text>
+        </View>
+
+        <Pressable
+          onPress={() => router.push("/(tabs)/more")}
+          style={{
+            backgroundColor: "#111",
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: "#222",
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontWeight: "700",
+            }}
+          >
+            More
+          </Text>
+        </Pressable>
+      </View>
 
       {/* Personal Score */}
 
@@ -216,7 +250,6 @@ export default function DashboardScreen() {
           padding: 20,
           borderRadius: 16,
           marginTop: 20,
-          marginBottom: 40,
         }}
       >
         <Text
@@ -240,6 +273,43 @@ export default function DashboardScreen() {
               {" \u2022 "}
               {project.priority}
               {project.deadline ? ` \u2022 ${project.deadline}` : ""}
+            </Text>
+          ))
+        )}
+      </View>
+
+      {/* Priority Tasks */}
+
+      <View
+        style={{
+          backgroundColor: "#111",
+          padding: 20,
+          borderRadius: 16,
+          marginTop: 20,
+          marginBottom: 40,
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontSize: 20,
+            fontWeight: "600",
+          }}
+        >
+          Priority Tasks
+        </Text>
+
+        {priorityTasks.length === 0 ? (
+          <Text style={{ color: "#AAA", marginTop: 12 }}>
+            No priority tasks yet
+          </Text>
+        ) : (
+          priorityTasks.map((task) => (
+            <Text key={task.id} style={{ color: "#AAA", marginTop: 8 }}>
+              {task.status === "completed" ? "\u2611" : "\u25A1"} {task.title}
+              {" \u2022 "}
+              {task.priority}
+              {task.dueDate ? ` \u2022 ${task.dueDate}` : ""}
             </Text>
           ))
         )}
