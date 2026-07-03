@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ccs-os-fixed",
-    "slug": "ccs-os-fixed",
+    "name": "CCS OS",
+    "slug": "sourish",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.sourishv.ccsos"
     },
     "web": {
       "output": "static",
@@ -44,6 +45,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "31bab17f-6427-4d7a-b7f7-2e11887b53fa"
+      }
+    },
+    "owner": "sourishvs-team"
   }
 }
